@@ -61,6 +61,20 @@ def diag_dist(point):
     return round(min(distan) / max_d * 100, 2)  # Relative distance.
 
 
+# def from_max_distance(point):
+#     max_point = (config.MAX_INDEX, config.MAX_INDEX)
+#     origin = (0, 0)
+#     max_d = distance.euclidean(origin, max_point)
+#     d = round(distance.euclidean(max_point, point) / max_d * 100, 2)
+#     return d
+def from_origin_distance(point):
+    max_point = (config.MAX_INDEX, config.MAX_INDEX)
+    origin = (0, 0)
+    max_d = distance.euclidean(origin, max_point)
+    d = round(distance.euclidean(origin, point) / max_d * 100, 2)
+    return d
+
+
 def get_link_ids_square(points, link_info):
     try:
         link_ids = link_info[(link_info.x_b > points[0][0])
@@ -109,6 +123,13 @@ coordinate_matrix = create_coordinate_matrix(sp=start_point,
 
 info = pd.read_csv(r'links_info.csv', sep=';')
 
+
+###############################################
+all_stms = []
+###############################################
+
+
+
 none_counter = 0
 total_counter = 0
 for i in range(0, len(coordinate_matrix)):
@@ -122,7 +143,6 @@ for i in range(0, len(coordinate_matrix)):
         p2 = (coordinate_matrix[i][j][2], coordinate_matrix[i][j][3])
 
         links_inside = get_link_ids_square(points=(p1, p2), link_info=info)
-
 
         if links_inside is not None:
             c = 0
@@ -140,6 +160,11 @@ for i in range(0, len(coordinate_matrix)):
                         for tran in transitions:
                             matrix = np.array(tran['intervals'][interval]['winter']['working'])
                             if int(np.sum(matrix)) > 20:
+
+                                ######################################################
+                                all_stms.append(matrix)
+                                ######################################################
+
                                 temp.append(list(matrix.flatten()))
                                 c += 1
                                 # temp_tran.append((tran['origin_id'], tran['destination_id']))
@@ -152,6 +177,7 @@ for i in range(0, len(coordinate_matrix)):
                     temp_tran = []
             except:
                 print('Warning: There are no transitions with oringin_id: %s' % link)
+
 
 
             slices_length = [len(slice) for slice in frontal_slices]
@@ -193,16 +219,27 @@ for i in range(0, len(coordinate_matrix)):
                 rounded = orig / np.sum(orig)
                 rounded = np.round(rounded, decimals=2)
                 cx, cy = get_mass_center(orig)
-                dist = diag_dist(point=(cx, cy))
+                dist_diagonal = diag_dist(point=(cx, cy))
+                dist_from_origin = from_origin_distance(point=(cx, cy))
 
                 anomaly = False
-                if dist >= 46:
+                if dist_diagonal >= 46:
                     anomaly = True
+
+                traff_state = 0
+                if dist_from_origin > 67:
+                    traff_state = 0
+                elif 40 < dist_from_origin < 67:
+                    traff_state = 1
+                else:
+                    traff_state = 2
 
                 chm = {'orig': orig.tolist(),
                        'rounded': rounded.tolist(),
                        'com_position': [cx, cy],
-                       'com_diag_dist': dist,
+                       'com_diag_dist': dist_diagonal,
+                       'dist_from_origin': dist_from_origin,
+                       'traff_state': traff_state,
                        'factor_id': factor_index,
                        'anomaly': anomaly,
                        'class': 0
@@ -220,7 +257,6 @@ for i in range(0, len(coordinate_matrix)):
                     chm['anomalous_trans'] = valid_transitions[spatial_max_id]
                     chm['max_temporal_id'] = temporal_max_id
                     chm['temporal_anomaly_char'] = tm
-
 
                 spatial_square['char_matrices'].append(chm)
                 factor_index += 1
@@ -242,11 +278,17 @@ for i in range(0, len(coordinate_matrix)):
 
         # TODO: spatial_square insert into database
 
-t1 = get_time()
-save_pickle_data('spatialTensors5.pkl', total_data)
-t2 = get_time()
-print('Pickle save time: {0}'.format(t2 - t1))
 
-t_end = get_time()
-print('Exe time: {0}'.format(t_end - t_start))
+########################################################
+save_pickle_data('all_matrices.pkl', all_stms)
+########################################################
+
+
+# t1 = get_time()
+# save_pickle_data('spatialTensors5.pkl', total_data)
+# t2 = get_time()
+# print('Pickle save time: {0}'.format(t2 - t1))
+#
+# t_end = get_time()
+# print('Exe time: {0}'.format(t_end - t_start))
 
