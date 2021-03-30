@@ -15,6 +15,21 @@ This code will be the result of the research related to training the Convolution
 ## More info
 If you are interested in this topic please contact me:
 [Leo Tisljaric](https://www.linkedin.com/in/leo-ti%C5%A1ljari%C4%87-28a56b123/)
+## How to Cite
+#### Plain text
+L. Tišljarić, T. Carić, B. Abramović, and T. Fratrović, “Traffic State Estimation and Classification on Citywide Scale Using Speed Transition Matrices,” Sustainability, vol. 12, no. 18, p. 7278, 2020.
+#### Bibtex
+@article{tivsljaric2020traffic,
+  title={Traffic State Estimation and Classification on Citywide Scale Using Speed Transition Matrices},
+  author={Ti{\v{s}}ljari{\'c}, Leo and Cari{\'c}, Ton{\v{c}}i and Abramovi{\'c}, Borna and Fratrovi{\'c}, Tomislav},
+  journal={Sustainability},
+  volume={12},
+  number={18},
+  pages={7278},
+  year={2020},
+  publisher={Multidisciplinary Digital Publishing Institute}
+}
+
 ## Requirements
 1. Install Python (3.8 recommended) [Download link](https://www.python.org/downloads/).
 2. Install required packages from `requirenments.txt` using [virtual environment](https://docs.python.org/3/tutorial/venv.html).
