@@ -6,6 +6,16 @@ import matplotlib.pyplot as plt
 import os
 
 
+def harmonic_speed(sd):
+    hSum = 0
+    for s in sd:
+        if s == 0:
+            hSum += 1
+            continue
+        hSum += 1 / s
+    return len(sd) / hSum
+
+
 def get_paths(folder_path, extension):
     paths = list([])
     for file in os.listdir(folder_path):

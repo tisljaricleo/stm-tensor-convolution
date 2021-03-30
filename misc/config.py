@@ -1,3 +1,17 @@
+def initialize_metadata():
+    global AUTHOR
+    global LICENCE
+    global EMAIL
+    global STATUS
+    global STATUS
+    global DOCFORMAT
+
+    AUTHOR = "Leo Tisljaric"
+    LICENCE = "GNU General Public License v3.0"
+    EMAIL = "tisljaricleo@gmail.com"
+    STATUS = "Development"
+    DOCFORMAT = "reStructuredText"
+
 
 def initialize_paths():
     """
