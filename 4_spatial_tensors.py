@@ -162,7 +162,32 @@ for i in range(0, len(coordinate_matrix)):
                             if int(np.sum(matrix)) > 20:
 
                                 ######################################################
-                                all_stms.append(matrix)
+                                cx, cy = get_mass_center(matrix)
+                                dist_diagonal = diag_dist(point=(cx, cy))
+                                dist_from_origin = from_origin_distance(point=(cx, cy))
+
+                                anomaly = False
+                                if dist_diagonal >= 46:
+                                    anomaly = True
+
+                                traff_state = 0
+                                if dist_from_origin > 67:
+                                    traff_state = 0
+                                elif 40 < dist_from_origin < 67:
+                                    traff_state = 1
+                                else:
+                                    traff_state = 2
+
+                                all_stms.append({'stm': matrix,
+                                                 'interval': interval,
+                                                 'season': 'winter',
+                                                 'day': 'working',
+                                                 'com_position': [cx, cy],
+                                                 'com_diag_dist': dist_diagonal,
+                                                 'dist_from_origin': dist_from_origin,
+                                                 'traff_state': traff_state,
+                                                 'anomaly': anomaly
+                                                 })
                                 ######################################################
 
                                 temp.append(list(matrix.flatten()))
@@ -177,7 +202,6 @@ for i in range(0, len(coordinate_matrix)):
                     temp_tran = []
             except:
                 print('Warning: There are no transitions with oringin_id: %s' % link)
-
 
 
             slices_length = [len(slice) for slice in frontal_slices]
